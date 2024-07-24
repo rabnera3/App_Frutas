@@ -2,13 +2,21 @@ import 'package:clippy_flutter/arc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:food_app/Widgets/AppBarWidget.dart';
-
+import 'package:provider/provider.dart';
+import '../Widgets/AppBarWidget.dart';
 import '../Widgets/ItemBottomNavBar.dart';
+import '../providers/CartProvider.dart';
+import '../models/Product.dart';
 
 class ItemPage extends StatelessWidget {
+  final Product product;
+
+  ItemPage({required this.product});
+
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 5),
@@ -18,10 +26,8 @@ class ItemPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16),
               child: Image.asset(
-                "images/sandia.png",
+                product.imageUrl,
                 height: 300,
-                // width: double.infinity,
-                // width: 100,
               ),
             ),
             Arc(
@@ -54,7 +60,7 @@ class ItemPage extends StatelessWidget {
                               onRatingUpdate: (index) {},
                             ),
                             Text(
-                              "L3",
+                              '\$${product.price}',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -72,7 +78,7 @@ class ItemPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Prueba el increible sabor",
+                              product.name,
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -117,7 +123,7 @@ class ItemPage extends StatelessWidget {
                           vertical: 12,
                         ),
                         child: Text(
-                          "Prueba nuestra deliciosa sandía a bajo precio! Es famosa y te encantará. ¡Disfruta y ordena muchas veces",
+                          "Prueba nuestra deliciosa ${product.name} a bajo precio! Es famosa y te encantará. ¡Disfruta y ordena muchas veces",
                           style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.justify,
                         ),
@@ -154,6 +160,32 @@ class ItemPage extends StatelessWidget {
                               ],
                             ),
                           ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          cart.addItem(product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('${product.name} añadido al carrito'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        child: Text('Añadir al Carrito'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Reemplaza 'primary'
+                          foregroundColor:
+                              Colors.white, // Reemplaza 'onPrimary'
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 50,
+                            vertical: 15,
+                          ),
                         ),
                       ),
                     ],

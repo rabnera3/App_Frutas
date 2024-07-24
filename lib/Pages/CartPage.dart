@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:food_app/Widgets/AppBarWidget.dart';
 import 'package:food_app/Widgets/DrawerWidget.dart';
-
 import '../Widgets/CartBottomNavBar.dart';
+import '../providers/CartProvider.dart';
 
 class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    final cartItems = cart.items.values.toList();
+
     return Scaffold(
       body: ListView(
         children: [
@@ -32,195 +36,112 @@ class CartPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Item
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 9),
-                    child: Container(
-                      width: 380,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 10,
-                            offset: Offset(0, 3),
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "images/sandia.png",
-                              height: 80,
-                              width: 150,
-                            ),
-                          ),
-                          Container(
-                            width: 190,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  "Sandia Roja",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "Prueba el increible sabor",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    // fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "L3",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10),
+                  // Lista de Items
+                  ...cartItems.map((cartItem) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 9),
+                      child: Container(
+                        width: 380,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 3,
+                              blurRadius: 10,
+                              offset: Offset(0, 3),
+                            )
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              child: Image.network(
+                                cartItem.product.imageUrl,
+                                height: 80,
+                                width: 150,
                               ),
+                            ),
+                            Container(
+                              width: 190,
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  Icon(
-                                    CupertinoIcons.minus,
-                                    color: Colors.white,
+                                  Text(
+                                    cartItem.product.name,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   Text(
-                                    "2",
+                                    "Cantidad: ${cartItem.quantity}",
                                     style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                      fontSize: 15,
+                                    ),
                                   ),
-                                  Icon(
-                                    CupertinoIcons.minus,
-                                    color: Colors.white,
+                                  Text(
+                                    "\$${cartItem.product.price}",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Item
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 9),
-                    child: Container(
-                      width: 380,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 10,
-                            offset: Offset(0, 3),
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "images/aguacate.png",
-                              height: 80,
-                              width: 150,
-                            ),
-                          ),
-                          Container(
-                            width: 190,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  "Aguacate Maduro",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                Text(
-                                  "Aguacate 100% Mexicano",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    // fontWeight: FontWeight.bold,
-                                  ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        cart.removeItem(cartItem.product.id);
+                                      },
+                                      child: Icon(
+                                        CupertinoIcons.minus,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${cartItem.quantity}",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        cart.addItem(cartItem.product);
+                                      },
+                                      child: Icon(
+                                        CupertinoIcons.plus,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "L2",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.minus,
-                                    color: Colors.white,
-                                  ),
-                                  Text(
-                                    "1",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                  Icon(
-                                    CupertinoIcons.minus,
-                                    color: Colors.white,
-                                  ),
-                                ],
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }).toList(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                     child: Container(
@@ -251,7 +172,7 @@ class CartPage extends StatelessWidget {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Text(
-                                  "10",
+                                  "${cart.items.length}",
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],
@@ -272,7 +193,7 @@ class CartPage extends StatelessWidget {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Text(
-                                  "L20",
+                                  "\$${cart.totalAmount}",
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],
@@ -293,7 +214,7 @@ class CartPage extends StatelessWidget {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Text(
-                                  "L20",
+                                  "L20", // Este valor puede ser dinámico si tienes una lógica para el costo de entrega
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],
@@ -317,7 +238,7 @@ class CartPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "L40",
+                                  "\$${cart.totalAmount + 20}", // Asumiendo que el costo de entrega es 20
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
