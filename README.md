@@ -1,16 +1,15 @@
-# app_frutas
+# App Frutas
 
-A new Flutter project.
+Esta es una aplicación Flutter para gestionar una app de compra de frutas.
 
-## Getting Started
+## Requisitos
 
-This project is a starting point for a Flutter application.
+- Flutter SDK
+- Dart SDK
 
-A few resources to get you started if this is your first Flutter project:
+## Instalación
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Clonar el repositorio:
+```sh
+git clone https://github.com/rabnera3/App_Frutas.git
+cd App_Frutas
