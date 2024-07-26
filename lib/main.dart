@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Pages/CartPage.dart';
-import 'Pages/HomePage.dart';
+import 'Pages/HomePage.dart'; // Importa HomePage
 import 'Pages/ItemPage.dart';
 import 'providers/CartProvider.dart';
 import 'models/Product.dart';

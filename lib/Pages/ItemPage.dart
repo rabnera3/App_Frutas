@@ -8,10 +8,17 @@ import '../Widgets/ItemBottomNavBar.dart';
 import '../providers/CartProvider.dart';
 import '../models/Product.dart';
 
-class ItemPage extends StatelessWidget {
+class ItemPage extends StatefulWidget {
   final Product product;
 
   ItemPage({required this.product});
+
+  @override
+  _ItemPageState createState() => _ItemPageState();
+}
+
+class _ItemPageState extends State<ItemPage> {
+  int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class ItemPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16),
               child: Image.asset(
-                product.imageUrl,
+                widget.product.imageUrl,
                 height: 300,
               ),
             ),
@@ -60,7 +67,7 @@ class ItemPage extends StatelessWidget {
                               onRatingUpdate: (index) {},
                             ),
                             Text(
-                              '\$${product.price}',
+                              'L${widget.product.price * quantity}',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -77,15 +84,18 @@ class ItemPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              product.name,
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                widget.product.name,
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
+                            SizedBox(width: 10),
                             Container(
-                              width: 90,
+                              width: 120,
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.red,
@@ -95,22 +105,38 @@ class ItemPage extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(
-                                    CupertinoIcons.minus,
-                                    color: Colors.white,
-                                    size: 20,
+                                  IconButton(
+                                    icon: Icon(
+                                      CupertinoIcons.minus,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (quantity > 1) {
+                                          quantity--;
+                                        }
+                                      });
+                                    },
                                   ),
                                   Text(
-                                    "1",
+                                    quantity.toString(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Icon(
-                                    CupertinoIcons.plus,
-                                    color: Colors.white,
-                                    size: 20,
+                                  IconButton(
+                                    icon: Icon(
+                                      CupertinoIcons.plus,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        quantity++;
+                                      });
+                                    },
                                   ),
                                 ],
                               ),
@@ -123,7 +149,7 @@ class ItemPage extends StatelessWidget {
                           vertical: 12,
                         ),
                         child: Text(
-                          "Prueba nuestra deliciosa ${product.name} a bajo precio! Es famosa y te encantará. ¡Disfruta y ordena muchas veces",
+                          "Prueba nuestra deliciosa ${widget.product.name} a bajo precio! Es famosa y te encantará. ¡Disfruta y ordena muchas veces",
                           style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.justify,
                         ),
@@ -163,31 +189,6 @@ class ItemPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          cart.addItem(product);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text('${product.name} añadido al carrito'),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                        child: Text('Añadir al Carrito'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red, // Reemplaza 'primary'
-                          foregroundColor:
-                              Colors.white, // Reemplaza 'onPrimary'
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 50,
-                            vertical: 15,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -196,7 +197,8 @@ class ItemPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: ItemBottomNavBar(),
+      bottomNavigationBar:
+          ItemBottomNavBar(product: widget.product, quantity: quantity),
     );
   }
 }
