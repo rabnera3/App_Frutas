@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/Product.dart';
 import '../providers/CartProvider.dart';
+import '../providers/NotificationProvider.dart';
+import '../models/Notification.dart';
 
 class ItemBottomNavBar extends StatelessWidget {
   final Product product;
@@ -43,11 +45,21 @@ class ItemBottomNavBar extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               final cart = Provider.of<CartProvider>(context, listen: false);
+              final notifications =
+                  Provider.of<NotificationProvider>(context, listen: false);
+
               for (int i = 0; i < quantity; i++) {
                 cart.addItem(product);
               }
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Añadido al carrito')),
+
+              notifications.addNotification(
+                NotificationItem(
+                  title: 'Producto añadido',
+                  message: '${product.name} añadido al carrito.',
+                  onTap: (context) {
+                    Navigator.pushNamed(context, 'cartPage');
+                  },
+                ),
               );
             },
             child: Text('Añadir al carrito'),

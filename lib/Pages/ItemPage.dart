@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../Widgets/AppBarWidget.dart';
 import '../Widgets/ItemBottomNavBar.dart';
 import '../providers/CartProvider.dart';
+import '../providers/NotificationProvider.dart'; // Importa NotificationProvider
 import '../models/Product.dart';
 
 class ItemPage extends StatefulWidget {
@@ -23,6 +24,8 @@ class _ItemPageState extends State<ItemPage> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
 
     return Scaffold(
       body: Padding(

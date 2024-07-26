@@ -4,6 +4,7 @@ import 'Pages/CartPage.dart';
 import 'Pages/HomePage.dart'; // Importa HomePage
 import 'Pages/ItemPage.dart';
 import 'providers/CartProvider.dart';
+import 'providers/NotificationProvider.dart';
 import 'models/Product.dart';
 
 void main() {
@@ -13,8 +14,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CartProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => NotificationProvider()),
+      ],
       child: MaterialApp(
         title: "Fruit app",
         debugShowCheckedModeBanner: false,
