@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Widgets/AppBarWidget.dart';
 import '../Widgets/CategoriesWidget.dart';
 import '../Widgets/DrawerWidget.dart';
-import '../Widgets/NewestItemsWidget.dart';
-import '../Widgets/PopularItemsWidget.dart';
+import '../Widgets/NewestItemsWidget.dart' as newest;
+import '../Widgets/PopularItemsWidget.dart' as popular;
+import '../providers/SearchProvider.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final searchProvider = Provider.of<SearchProvider>(context);
+
     return Scaffold(
       body: ListView(
         children: [
@@ -53,6 +57,9 @@ class HomePage extends StatelessWidget {
                           horizontal: 15,
                         ),
                         child: TextFormField(
+                          onChanged: (value) {
+                            searchProvider.updateSearchQuery(value);
+                          },
                           decoration: InputDecoration(
                             hintText: "¿Qué te gustaría obtener?",
                             border: InputBorder.none,
@@ -95,7 +102,9 @@ class HomePage extends StatelessWidget {
           ),
 
           // Popular Items Widget
-          PopularItemsWidget(),
+          popular.PopularItemsWidget(
+            searchQuery: searchProvider.searchQuery,
+          ),
 
           // Newest Items
           Padding(
@@ -110,7 +119,9 @@ class HomePage extends StatelessWidget {
           ),
 
           // Newest Item Widget
-          NewestItemsWidget(),
+          newest.NewestItemsWidget(
+            searchQuery: searchProvider.searchQuery,
+          ),
         ],
       ),
       drawer: DrawerWidget(),

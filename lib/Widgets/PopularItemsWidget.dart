@@ -1,8 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 
 class PopularItemsWidget extends StatelessWidget {
+  final String searchQuery;
+
+  PopularItemsWidget({required this.searchQuery});
+
   @override
   Widget build(BuildContext context) {
     final products = [
@@ -43,12 +48,17 @@ class PopularItemsWidget extends StatelessWidget {
       ),
     ];
 
+    final filteredProducts = products
+        .where((product) =>
+            product.name.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
         child: Row(
-          children: products.map((product) {
+          children: filteredProducts.map((product) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 7),
               child: GestureDetector(

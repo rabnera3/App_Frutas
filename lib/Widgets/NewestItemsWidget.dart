@@ -5,6 +5,10 @@ import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 
 class NewestItemsWidget extends StatelessWidget {
+  final String searchQuery;
+
+  NewestItemsWidget({required this.searchQuery});
+
   @override
   Widget build(BuildContext context) {
     final products = [
@@ -47,11 +51,16 @@ class NewestItemsWidget extends StatelessWidget {
       ),
     ];
 
+    final filteredProducts = products
+        .where((product) =>
+            product.name.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
-          children: products.map((product) {
+          children: filteredProducts.map((product) {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: GestureDetector(

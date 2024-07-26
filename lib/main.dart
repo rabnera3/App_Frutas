@@ -4,7 +4,8 @@ import 'Pages/CartPage.dart';
 import 'Pages/HomePage.dart'; // Importa HomePage
 import 'Pages/ItemPage.dart';
 import 'providers/CartProvider.dart';
-import 'providers/NotificationProvider.dart';
+import 'providers/NotificationProvider.dart'; // Importa NotificationProvider
+import 'providers/SearchProvider.dart'; // Importa SearchProvider
 import 'models/Product.dart';
 
 void main() {
@@ -17,7 +18,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => NotificationProvider()),
+        ChangeNotifierProvider(
+            create: (context) =>
+                NotificationProvider()), // Añade NotificationProvider
+        ChangeNotifierProvider(
+            create: (context) => SearchProvider()), // Añade SearchProvider
       ],
       child: MaterialApp(
         title: "Fruit app",
