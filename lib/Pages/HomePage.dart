@@ -36,18 +36,6 @@ class _HomePageState extends State<HomePage> {
     final searchProvider = Provider.of<SearchProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        backgroundColor: Colors.red,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
-          ),
-        ],
-      ),
       body: ListView(
         children: [
           // Custom App Bar Widget
@@ -199,7 +187,7 @@ class _HomePageState extends State<HomePage> {
         ]),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, "cartPage");
+            Navigator.pushNamed(context, '/cartPage');
           },
           child: Icon(
             CupertinoIcons.cart,

@@ -28,7 +28,9 @@ class DrawerWidget extends StatelessWidget {
               ),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage("images/avatar.jpg"),
+                backgroundColor: Colors.white,
               ),
+              margin: EdgeInsets.zero,
             ),
           ),
 
@@ -45,6 +47,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/home');
+            },
           ),
 
           // List Tile
@@ -60,6 +65,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/account');
+            },
           ),
 
           // List Tile
@@ -75,6 +83,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/orders');
+            },
           ),
 
           // List Tile
@@ -90,6 +101,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/favoritesPage');
+            },
           ),
 
           // List Tile
@@ -105,6 +119,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/settings');
+            },
           ),
 
           // List Tile
@@ -120,6 +137,9 @@ class DrawerWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/login');
+            },
           ),
         ],
       ),

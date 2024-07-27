@@ -5,8 +5,10 @@ import 'Pages/HomePage.dart';
 import 'Pages/ItemPage.dart';
 import 'Pages/FavoritesPage.dart';
 import 'Pages/LoginPage.dart';
-import 'Pages/RegisterPage.dart' as register;
-import 'Pages/SettingsPage.dart' as settings;
+import 'Pages/RegisterPage.dart';
+import 'Pages/SettingsPage.dart';
+import 'Pages/AccountPage.dart';
+import 'Pages/OrdersPage.dart';
 import 'providers/CartProvider.dart';
 import 'providers/FavoriteProvider.dart';
 import 'providers/NotificationProvider.dart';
@@ -32,9 +34,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           scaffoldBackgroundColor: Color(0xFFF5F5F3),
-          primaryColor: Colors.red,
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: Colors.redAccent),
         ),
         initialRoute: '/login',
         onGenerateRoute: (settings) {
@@ -48,11 +47,13 @@ class MyApp extends StatelessWidget {
         },
         routes: {
           '/login': (context) => LoginPage(),
-          '/register': (context) => register.RegisterPage(),
+          '/register': (context) => RegisterPage(),
           '/home': (context) => HomePage(),
           '/cartPage': (context) => CartPage(),
           '/favoritesPage': (context) => FavoritesPage(),
-          '/settings': (context) => settings.SettingsPage(),
+          '/settings': (context) => SettingsPage(),
+          '/account': (context) => AccountPage(),
+          '/orders': (context) => OrdersPage(),
         },
       ),
     );
