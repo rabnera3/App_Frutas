@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Pages/CartPage.dart';
-import 'Pages/HomePage.dart'; // Importa HomePage
+import 'Pages/HomePage.dart';
 import 'Pages/ItemPage.dart';
+import 'Pages/FavoritesPage.dart'; // Nueva importación
 import 'providers/CartProvider.dart';
-import 'providers/NotificationProvider.dart'; // Importa NotificationProvider
-import 'providers/SearchProvider.dart'; // Importa SearchProvider
+import 'providers/FavoriteProvider.dart'; // Nueva importación
+import 'providers/NotificationProvider.dart'; // Nueva importación
+import 'providers/SearchProvider.dart'; // Nueva importación
 import 'models/Product.dart';
 
 void main() {
@@ -19,10 +21,11 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(
-            create: (context) =>
-                NotificationProvider()), // Añade NotificationProvider
+            create: (context) => FavoriteProvider()), // Nueva línea
         ChangeNotifierProvider(
-            create: (context) => SearchProvider()), // Añade SearchProvider
+            create: (context) => NotificationProvider()), // Nueva línea
+        ChangeNotifierProvider(
+            create: (context) => SearchProvider()), // Nueva línea
       ],
       child: MaterialApp(
         title: "Fruit app",
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
         routes: {
           "/": (context) => HomePage(),
           "cartPage": (context) => CartPage(),
+          "favoritesPage": (context) => FavoritesPage(), // Nueva ruta
         },
       ),
     );

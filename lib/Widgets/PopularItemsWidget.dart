@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
+import '../providers/FavoriteProvider.dart';
+import 'package:provider/provider.dart';
 
 class PopularItemsWidget extends StatelessWidget {
   final String searchQuery;
@@ -72,7 +74,6 @@ class PopularItemsWidget extends StatelessWidget {
                 },
                 child: Container(
                   width: 170,
-                  height: 225,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -94,9 +95,12 @@ class PopularItemsWidget extends StatelessWidget {
                           alignment: Alignment.center,
                           child: Image.asset(
                             product.imageUrl,
-                            height: 130,
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.cover,
                           ),
                         ),
+                        SizedBox(height: 5),
                         Text(
                           product.name,
                           style: TextStyle(
@@ -113,7 +117,7 @@ class PopularItemsWidget extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 12),
+                        SizedBox(height: 5),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -125,10 +129,27 @@ class PopularItemsWidget extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Icon(
-                              Icons.favorite_border,
-                              color: Colors.red,
-                              size: 26,
+                            Consumer<FavoriteProvider>(
+                              builder: (context, favoriteProvider, _) {
+                                final isFavorite = favoriteProvider.favorites
+                                    .contains(product);
+                                return IconButton(
+                                  icon: Icon(
+                                    isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: Colors.red,
+                                    size: 26,
+                                  ),
+                                  onPressed: () {
+                                    if (isFavorite) {
+                                      favoriteProvider.removeFavorite(product);
+                                    } else {
+                                      favoriteProvider.addFavorite(product);
+                                    }
+                                  },
+                                );
+                              },
                             ),
                           ],
                         ),
