@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/FavoriteProvider.dart';
-import '../models/Product.dart';
 import 'ItemPage.dart';
 import '../Widgets/AppBarWidget.dart';
 

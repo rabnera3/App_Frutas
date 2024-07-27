@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/NotificationProvider.dart';
-import '../providers/FavoriteProvider.dart'; // Nueva importación
 import '../Pages/FavoritesPage.dart'; // Nueva importación
 import 'NotificationMenu.dart';
 

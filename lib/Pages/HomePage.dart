@@ -4,9 +4,8 @@ import 'package:provider/provider.dart';
 import '../Widgets/AppBarWidget.dart';
 import '../Widgets/CategoriesWidget.dart';
 import '../Widgets/DrawerWidget.dart';
-import '../Widgets/ProductListWidget.dart';
-import '../Widgets/PopularItemsWidget.dart';
-import '../Widgets/NewestItemsWidget.dart';
+import '../Widgets/NewestItemsWidget.dart' as newest;
+import '../Widgets/PopularItemsWidget.dart' as popular;
 import '../providers/SearchProvider.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,6 +36,18 @@ class _HomePageState extends State<HomePage> {
     final searchProvider = Provider.of<SearchProvider>(context);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Home"),
+        backgroundColor: Colors.red,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+        ],
+      ),
       body: ListView(
         children: [
           // Custom App Bar Widget
@@ -132,9 +143,9 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Popular Items Widget
-            PopularItemsWidget(
+            popular.PopularItemsWidget(
               searchQuery: searchProvider.searchQuery,
-              categoryId: '',
+              categoryId: selectedCategoryId,
             ),
 
             // Newest Items
@@ -150,9 +161,9 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Newest Item Widget
-            NewestItemsWidget(
+            newest.NewestItemsWidget(
               searchQuery: searchProvider.searchQuery,
-              categoryId: '',
+              categoryId: selectedCategoryId,
             ),
           ] else ...[
             // Category Title
@@ -168,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Category Items Widget
-            ProductListWidget(
+            newest.NewestItemsWidget(
               searchQuery: searchProvider.searchQuery,
               categoryId: selectedCategoryId,
             ),
