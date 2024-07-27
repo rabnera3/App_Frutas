@@ -1,59 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import '../providers/FavoriteProvider.dart';
-import 'package:provider/provider.dart';
+import '../models/product_data.dart';
 
 class PopularItemsWidget extends StatelessWidget {
   final String searchQuery;
+  final String categoryId;
 
-  PopularItemsWidget({required this.searchQuery});
+  PopularItemsWidget({required this.searchQuery, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
-    final products = [
-      Product(
-        id: 'p1',
-        name: 'Aguacate',
-        price: 10.0,
-        imageUrl: 'images/aguacate.png',
-        description: 'Delicioso aguacate.',
-      ),
-      Product(
-        id: 'p2',
-        name: 'Fresas',
-        price: 5.0,
-        imageUrl: 'images/fresa.png',
-        description: 'Fresas frescas.',
-      ),
-      Product(
-        id: 'p3',
-        name: 'Bananas',
-        price: 3.0,
-        imageUrl: 'images/banana.png',
-        description: 'Bananas dulces.',
-      ),
-      Product(
-        id: 'p4',
-        name: 'Tomate Pera',
-        price: 1.0,
-        imageUrl: 'images/tomate.png',
-        description: 'Tomate para ensaladas.',
-      ),
-      Product(
-        id: 'p5',
-        name: 'Sandia Roja',
-        price: 3.0,
-        imageUrl: 'images/sandia.png',
-        description: 'Sandia jugosa.',
-      ),
-    ];
-
-    final filteredProducts = products
+    List<Product> filteredProducts = products
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
+
+    if (categoryId.isNotEmpty) {
+      filteredProducts = filteredProducts
+          .where((product) => product.categoryId == categoryId)
+          .toList();
+    }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

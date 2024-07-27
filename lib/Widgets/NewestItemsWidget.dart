@@ -5,58 +5,29 @@ import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import 'package:provider/provider.dart';
 import '../providers/FavoriteProvider.dart';
+import '../providers/CartProvider.dart';
+import '../providers/NotificationProvider.dart';
+import '../models/Notification.dart';
+import '../models/product_data.dart';
 
 class NewestItemsWidget extends StatelessWidget {
   final String searchQuery;
+  final String categoryId;
 
-  NewestItemsWidget({required this.searchQuery});
+  NewestItemsWidget({required this.searchQuery, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
-    final products = [
-      Product(
-        id: 'p5',
-        name: 'Sandia Roja',
-        price: 3.0,
-        imageUrl: 'images/sandia.png',
-        description:
-            'Prueba el increible sabor de nuestra Sandia Roja, jugosa y refrescante.',
-      ),
-      Product(
-        id: 'p1',
-        name: 'Aguacate Maduro',
-        price: 2.0,
-        imageUrl: 'images/aguacate.png',
-        description:
-            'Aguacate 100% Mexicano, perfecto para guacamole y ensaladas.',
-      ),
-      Product(
-        id: 'p3',
-        name: 'Bananas',
-        price: 3.0,
-        imageUrl: 'images/banana.png',
-        description: 'Bananas Cavendish, dulces y ricas en potasio.',
-      ),
-      Product(
-        id: 'p4',
-        name: 'Tomate Pera',
-        price: 1.0,
-        imageUrl: 'images/tomate.png',
-        description: 'Tomates Pera, ideales para ensaladas y salsas.',
-      ),
-      Product(
-        id: 'p2',
-        name: 'Fresa Suave',
-        price: 5.0,
-        imageUrl: 'images/fresa.png',
-        description: 'Fresas suaves, perfectas para tus postres y batidos.',
-      ),
-    ];
-
-    final filteredProducts = products
+    List<Product> filteredProducts = products
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
+
+    if (categoryId.isNotEmpty) {
+      filteredProducts = filteredProducts
+          .where((product) => product.categoryId == categoryId)
+          .toList();
+    }
 
     return SingleChildScrollView(
       child: Padding(
@@ -177,10 +148,32 @@ class NewestItemsWidget extends StatelessWidget {
                                   );
                                 },
                               ),
-                              Icon(
-                                CupertinoIcons.cart,
-                                color: Colors.red,
-                                size: 26,
+                              IconButton(
+                                icon: Icon(
+                                  CupertinoIcons.cart,
+                                  color: Colors.red,
+                                  size: 26,
+                                ),
+                                onPressed: () {
+                                  final cart = Provider.of<CartProvider>(
+                                      context,
+                                      listen: false);
+                                  cart.addItem(product);
+
+                                  // Agregar notificación
+                                  final notificationProvider =
+                                      Provider.of<NotificationProvider>(context,
+                                          listen: false);
+                                  notificationProvider
+                                      .addNotification(NotificationItem(
+                                    title: 'Producto Añadido',
+                                    message:
+                                        'Añadido al carrito: ${product.name}',
+                                    onTap: (context) {
+                                      Navigator.pushNamed(context, 'cartPage');
+                                    },
+                                  ));
+                                },
                               ),
                             ],
                           ),
