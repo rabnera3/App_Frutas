@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/FavoriteProvider.dart';
 import 'ItemPage.dart';
 import '../Widgets/AppBarWidget.dart';
+import '../Widgets/DrawerWidget.dart'; // Asegúrate de importar el DrawerWidget
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -11,6 +12,7 @@ class FavoritesPage extends StatelessWidget {
     final favoriteProvider = Provider.of<FavoriteProvider>(context);
 
     return Scaffold(
+      drawer: DrawerWidget(), // Añade el Drawer aquí
       body: ListView(
         children: [
           AppBarWidget(),

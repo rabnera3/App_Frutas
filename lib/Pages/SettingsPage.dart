@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../Widgets/DrawerWidget.dart';
+import '../Widgets/AppBarWidget.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -11,6 +13,7 @@ class SettingsPage extends StatelessWidget {
               hasScrollBody: false,
               child: Column(
                 children: [
+                  AppBarWidget(),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Center(
@@ -47,6 +50,7 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: DrawerWidget(),
     );
   }
 }
