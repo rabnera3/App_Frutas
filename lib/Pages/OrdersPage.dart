@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/OrdersProvider.dart';
 import '../Widgets/DrawerWidget.dart';
 import '../Widgets/AppBarWidget.dart';
+import '../models/Order.dart';
 
 class OrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final ordersProvider = Provider.of<OrdersProvider>(context);
+    final orders = ordersProvider.orders;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -24,24 +30,19 @@ class OrdersPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 padding: EdgeInsets.all(16.0),
-                children: [
-                  OrderItem(
-                    orderId: '123456',
-                    date: '2024-07-24',
-                    total: 50.0,
-                    status: 'En camino',
-                  ),
-                  OrderItem(
-                    orderId: '789012',
-                    date: '2024-07-23',
-                    total: 30.0,
-                    status: 'Entregado',
-                  ),
-                  // Agrega más OrderItem según sea necesario
-                ],
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  final order = orders[index];
+                  return OrderItem(
+                    orderId: order.id.toString(),
+                    date: order.date.toString().split(' ')[0],
+                    total: order.total,
+                    status: order.status,
+                  );
+                },
               ),
             ),
           ],

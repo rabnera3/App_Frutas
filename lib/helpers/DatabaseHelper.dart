@@ -16,7 +16,7 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'food_app.db');
+    String path = join(await getDatabasesPath(), 'comida.db');
     return await openDatabase(
       path,
       version: 1,

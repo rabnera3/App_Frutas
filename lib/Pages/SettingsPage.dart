@@ -152,7 +152,7 @@ class HelpSection extends StatelessWidget {
           title: Text('Preguntas frecuentes'),
           onTap: () {
             _showPopup(context, 'Preguntas frecuentes',
-                '1. ¿Cómo realizo un pedido?\nPara realizar un pedido, selecciona los productos que deseas comprar y agrégalos al carrito. Luego, procede al pago.\n\n2. ¿Cómo puedo rastrear mi pedido?\nUna vez que tu pedido ha sido enviado, recibirás un número de seguimiento que puedes usar para rastrear tu pedido en nuestro sitio web.\n\n3. ¿Puedo devolver un producto?\nSí, aceptamos devoluciones dentro de los 30 días posteriores a la compra. El producto debe estar en su estado original.');
+                '1. ¿Cómo realizo un pedido?\nPara realizar un pedido, selecciona los productos que deseas comprar y agrégalos al carrito. Luego, procede al pago.\n\n2. ¿Cómo puedo rastrear mi pedido?\nUna vez que tu pedido ha sido enviado, puedes rastrear tu pedido en el apartado de pedidos en la app.\n\n3. ¿Puedo devolver un producto?\nSí, aceptamos devoluciones dentro de los 30 días posteriores a la compra. solamente si el pedido no llego en el tiempo acordado, o llego en mal estado.');
           },
         ),
         ListTile(

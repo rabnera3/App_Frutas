@@ -17,6 +17,7 @@ import 'providers/SearchProvider.dart';
 import 'providers/UserProvider.dart';
 import 'helpers/DatabaseHelper.dart';
 import 'providers/ProductProvider.dart';
+import 'providers/OrdersProvider.dart'; // Importar OrdersProvider
 import 'models/Product.dart';
 
 void main() async {
@@ -51,6 +52,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SearchProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => ProductProvider()),
+        ChangeNotifierProxyProvider<UserProvider, OrdersProvider>(
+          create: (context) => OrdersProvider(),
+          update: (context, userProvider, ordersProvider) =>
+              ordersProvider!..setUserProvider(userProvider),
+        ),
       ],
       child: MaterialApp(
         title: "Fruit app",
