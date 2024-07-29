@@ -56,16 +56,18 @@ class ItemBottomNavBar extends StatelessWidget {
                 NotificationItem(
                   title: 'Producto añadido',
                   message: '${product.name} añadido al carrito.',
-                  onTap: (context) {
-                    Navigator.pushNamed(context, 'cartPage');
-                  },
+                  dateTime: DateTime.now(),
                 ),
               );
+
+              Navigator.pushNamed(context, '/cartPage');
             },
             child: Text('Añadir al carrito'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: Colors
+                  .red, // Debería usar backgroundColor si usas la última versión de Flutter
+              foregroundColor: Colors
+                  .white, // Debería usar foregroundColor si usas la última versión de Flutter
             ),
           ),
         ],

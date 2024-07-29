@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart'; // Importar hive_flutter
 import 'Pages/CartPage.dart';
 import 'Pages/HomePage.dart';
 import 'Pages/ItemPage.dart';
@@ -14,8 +16,22 @@ import 'providers/FavoriteProvider.dart';
 import 'providers/NotificationProvider.dart';
 import 'providers/SearchProvider.dart';
 import 'models/Product.dart';
+import 'models/Notification.dart'; // Importar Notification
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Especificar la dirección para Hive
+  await Hive.initFlutter('hive_boxes');
+
+  // Registrar adaptadores
+  Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(NotificationItemAdapter());
+
+  // Abrir cajas Hive
+  await Hive.openBox<Product>('productBox');
+  await Hive.openBox<NotificationItem>('notificationBox');
+
   runApp(MyApp());
 }
 

@@ -1,13 +1,21 @@
-import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
-class NotificationItem {
-  final String title;
-  final String message;
-  final void Function(BuildContext context) onTap;
+part 'Notification.g.dart';
+
+@HiveType(typeId: 1)
+class NotificationItem extends HiveObject {
+  @HiveField(0)
+  late String title;
+
+  @HiveField(1)
+  late String message;
+
+  @HiveField(2)
+  late DateTime dateTime;
 
   NotificationItem({
     required this.title,
     required this.message,
-    required this.onTap,
+    required this.dateTime,
   });
 }

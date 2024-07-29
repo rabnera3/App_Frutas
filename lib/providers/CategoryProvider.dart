@@ -1,18 +1,28 @@
-// CategoryProvider.dart
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class CategoryProvider with ChangeNotifier {
-  String _selectedCategoryId = '';
+  late Box<String> _categoryBox;
 
-  String get selectedCategoryId => _selectedCategoryId;
+  CategoryProvider() {
+    _initBox();
+  }
+
+  Future<void> _initBox() async {
+    _categoryBox = await Hive.openBox<String>('categoryBox');
+    notifyListeners();
+  }
+
+  String get selectedCategoryId =>
+      _categoryBox.get('selectedCategoryId', defaultValue: '') ?? '';
 
   void selectCategory(String categoryId) {
-    _selectedCategoryId = categoryId;
+    _categoryBox.put('selectedCategoryId', categoryId);
     notifyListeners();
   }
 
   void clearCategory() {
-    _selectedCategoryId = '';
+    _categoryBox.delete('selectedCategoryId');
     notifyListeners();
   }
 }

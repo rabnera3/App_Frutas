@@ -50,8 +50,7 @@ class NotificationMenu extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context)
                               .pop(); // Cerrar el cuadro de diálogo primero
-                          Navigator.pushNamed(
-                              context, '/cartPage'); // Navegar al carrito
+                          Navigator.pushNamed(context, '/cartPage');
                           notificationProvider.removeNotification(notification);
                         },
                       );

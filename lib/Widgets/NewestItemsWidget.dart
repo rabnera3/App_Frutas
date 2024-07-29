@@ -8,7 +8,7 @@ import '../providers/FavoriteProvider.dart';
 import '../providers/CartProvider.dart';
 import '../providers/NotificationProvider.dart';
 import '../models/Notification.dart';
-import '../models/product_data.dart';
+import 'package:hive/hive.dart';
 
 class NewestItemsWidget extends StatelessWidget {
   final String searchQuery;
@@ -18,7 +18,8 @@ class NewestItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> filteredProducts = products
+    final productBox = Hive.box<Product>('productBox');
+    List<Product> filteredProducts = productBox.values
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -86,7 +87,7 @@ class NewestItemsWidget extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                product.description,
+                                product.longDescription,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -169,9 +170,7 @@ class NewestItemsWidget extends StatelessWidget {
                                     title: 'Producto Añadido',
                                     message:
                                         'Añadido al carrito: ${product.name}',
-                                    onTap: (context) {
-                                      Navigator.pushNamed(context, 'cartPage');
-                                    },
+                                    dateTime: DateTime.now(),
                                   ));
                                 },
                               ),

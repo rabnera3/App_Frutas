@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import '../providers/FavoriteProvider.dart';
-import '../models/product_data.dart';
+import 'package:hive/hive.dart';
 
 class PopularItemsWidget extends StatelessWidget {
   final String searchQuery;
@@ -14,7 +14,8 @@ class PopularItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> filteredProducts = products
+    final productBox = Hive.box<Product>('productBox');
+    List<Product> filteredProducts = productBox.values
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -80,7 +81,7 @@ class PopularItemsWidget extends StatelessWidget {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          product.description,
+                          product.longDescription,
                           style: TextStyle(
                             fontSize: 15,
                           ),

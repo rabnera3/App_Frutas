@@ -4,7 +4,7 @@ import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import '../providers/FavoriteProvider.dart';
 import 'package:provider/provider.dart';
-import '../models/product_data.dart';
+
 
 class ProductListWidget extends StatelessWidget {
   final String searchQuery;
@@ -17,7 +17,7 @@ class ProductListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> filteredProducts = products
+    List<Product> filteredProducts = 
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -88,7 +88,7 @@ class ProductListWidget extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                product.description,
+                                product.longDescription,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),

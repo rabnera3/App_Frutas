@@ -90,7 +90,7 @@ class FavoritesPage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  product.description,
+                                  product.longDescription,
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),

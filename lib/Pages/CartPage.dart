@@ -89,7 +89,7 @@ class CartPage extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        item.product.description,
+                                        item.product.longDescription,
                                         style: TextStyle(
                                           fontSize: 16,
                                         ),

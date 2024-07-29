@@ -1,26 +1,38 @@
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import '../models/Notification.dart';
 
 class NotificationProvider extends ChangeNotifier {
-  List<NotificationItem> _notifications = [];
+  late Box<NotificationItem> _notificationsBox;
 
-  List<NotificationItem> get notifications => _notifications;
+  NotificationProvider() {
+    _initBox();
+  }
+
+  Future<void> _initBox() async {
+    _notificationsBox =
+        await Hive.openBox<NotificationItem>('notificationsBox');
+    notifyListeners();
+  }
+
+  List<NotificationItem> get notifications => _notificationsBox.values.toList();
 
   void addNotification(NotificationItem notification) {
-    _notifications.add(notification);
+    _notificationsBox.add(notification);
     notifyListeners();
   }
 
   void removeNotification(NotificationItem notification) {
-    _notifications.remove(notification);
+    final key = _notificationsBox.keys
+        .firstWhere((k) => _notificationsBox.get(k) == notification);
+    _notificationsBox.delete(key);
     notifyListeners();
   }
 
   void clearNotifications() {
-    _notifications.clear();
+    _notificationsBox.clear();
     notifyListeners();
   }
 
-  int get notificationCount =>
-      _notifications.length; // Contador de notificaciones
+  int get notificationCount => _notificationsBox.length;
 }
