@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import '../providers/FavoriteProvider.dart';
-import 'package:hive/hive.dart';
+import '../providers/ProductProvider.dart';
 
 class PopularItemsWidget extends StatelessWidget {
   final String searchQuery;
@@ -14,8 +14,10 @@ class PopularItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productBox = Hive.box<Product>('productBox');
-    List<Product> filteredProducts = productBox.values
+    final productProvider = Provider.of<ProductProvider>(context);
+    List<Product> products = productProvider.products;
+
+    List<Product> filteredProducts = products
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -102,7 +104,8 @@ class PopularItemsWidget extends StatelessWidget {
                             ),
                             Consumer<FavoriteProvider>(
                               builder: (context, favoriteProvider, _) {
-                                final isFavorite = favoriteProvider.favorites
+                                final isFavorite = favoriteProvider
+                                    .favoriteProducts
                                     .contains(product);
                                 return IconButton(
                                   icon: Icon(

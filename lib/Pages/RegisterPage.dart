@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
+import '../providers/UserProvider.dart';
+import '../models/User.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -31,10 +34,48 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Acción de registro
+      User newUser = User(
+        username: _usernameController.text,
+        fullName: '${_firstNameController.text} ${_lastNameController.text}',
+        address: _addressController.text,
+        phoneNumber: _phoneNumber!,
+        birthDate: _selectedBirthDate!,
+        gender: _selectedGender!,
+        email: _emailController.text,
+        password: _passwordController.text,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      bool registrationSuccess =
+          await Provider.of<UserProvider>(context, listen: false)
+              .register(newUser);
+
+      if (registrationSuccess) {
+        // Registro exitoso, navega a la página de inicio de sesión
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        // Muestra un error si el usuario ya existe
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text(
+                'El nombre de usuario o correo electrónico ya está en uso.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 

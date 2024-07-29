@@ -4,15 +4,22 @@ import 'package:provider/provider.dart';
 import '../providers/FavoriteProvider.dart';
 import 'ItemPage.dart';
 import '../Widgets/AppBarWidget.dart';
-import '../Widgets/DrawerWidget.dart'; // Asegúrate de importar el DrawerWidget
+import '../Widgets/DrawerWidget.dart';
+import '../providers/UserProvider.dart';
 
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+
+    // Asegúrate de que el usuario esté autenticado
+    if (userProvider.user == null) {
+      return Center(child: Text('Usuario no autenticado.'));
+    }
 
     return Scaffold(
-      drawer: DrawerWidget(), // Añade el Drawer aquí
+      drawer: DrawerWidget(),
       body: ListView(
         children: [
           AppBarWidget(),
@@ -26,7 +33,7 @@ class FavoritesPage extends StatelessWidget {
               ),
             ),
           ),
-          if (favoriteProvider.favorites.isEmpty)
+          if (favoriteProvider.favoriteProducts.isEmpty)
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -37,7 +44,7 @@ class FavoritesPage extends StatelessWidget {
               ),
             )
           else
-            ...favoriteProvider.favorites.map((product) {
+            ...favoriteProvider.favoriteProducts.map((product) {
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: GestureDetector(

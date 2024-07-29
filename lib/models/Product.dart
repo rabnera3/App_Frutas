@@ -1,32 +1,11 @@
-import 'package:hive/hive.dart';
-
-part 'Product.g.dart';
-
-@HiveType(typeId: 0)
-class Product extends HiveObject {
-  @HiveField(0)
+class Product {
   final String id;
-
-  @HiveField(1)
   final String name;
-
-  @HiveField(2)
   final double price;
-
-  @HiveField(3)
   final String imageUrl;
-
-  @HiveField(4)
   final String shortDescription;
-
-  @HiveField(5)
   final String longDescription;
-
-  @HiveField(6)
   final String categoryId;
-
-  @HiveField(7)
-  final String category;
 
   Product({
     required this.id,
@@ -36,6 +15,29 @@ class Product extends HiveObject {
     required this.shortDescription,
     required this.longDescription,
     required this.categoryId,
-    required this.category,
   });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      price: json['price'],
+      imageUrl: json['image_url'],
+      shortDescription: json['short_description'],
+      longDescription: json['long_description'],
+      categoryId: json['category_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'image_url': imageUrl,
+      'short_description': shortDescription,
+      'long_description': longDescription,
+      'category_id': categoryId,
+    };
+  }
 }

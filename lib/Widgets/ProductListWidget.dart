@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import '../providers/FavoriteProvider.dart';
+import '../providers/ProductProvider.dart';
 import 'package:provider/provider.dart';
-
 
 class ProductListWidget extends StatelessWidget {
   final String searchQuery;
@@ -17,7 +17,10 @@ class ProductListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> filteredProducts = 
+    final productProvider = Provider.of<ProductProvider>(context);
+    List<Product> products = productProvider.products;
+
+    List<Product> filteredProducts = products
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -114,7 +117,8 @@ class ProductListWidget extends StatelessWidget {
                             children: [
                               Consumer<FavoriteProvider>(
                                 builder: (context, favoriteProvider, _) {
-                                  final isFavorite = favoriteProvider.favorites
+                                  final isFavorite = favoriteProvider
+                                      .favoriteProducts
                                       .contains(product);
                                   return IconButton(
                                     icon: Icon(

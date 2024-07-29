@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/NotificationProvider.dart';
-import '../models/Notification.dart';
 
 class NotificationMenu extends StatelessWidget {
   @override

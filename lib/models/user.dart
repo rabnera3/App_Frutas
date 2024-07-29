@@ -1,36 +1,59 @@
-import 'package:hive/hive.dart';
+class User {
+  final int? id;
+  final String username;
+  final String fullName;
+  final String address;
+  final String phoneNumber;
+  final DateTime birthDate;
+  final String gender;
+  final String email;
+  final String password;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
-part 'user.g.dart';
+  User({
+    this.id,
+    required this.username,
+    required this.fullName,
+    required this.address,
+    required this.phoneNumber,
+    required this.birthDate,
+    required this.gender,
+    required this.email,
+    required this.password,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-@HiveType(typeId: 0)
-class User extends HiveObject {
-  @HiveField(0)
-  late String username;
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      fullName: json['full_name'],
+      address: json['address'],
+      phoneNumber: json['phone_number'],
+      birthDate: DateTime.parse(json['birth_date']),
+      gender: json['gender'],
+      email: json['email'],
+      password: json['password'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+    );
+  }
 
-  @HiveField(1)
-  late String fullName;
-
-  @HiveField(2)
-  late String address;
-
-  @HiveField(3)
-  late String phoneNumber;
-
-  @HiveField(4)
-  late DateTime birthDate;
-
-  @HiveField(5)
-  late String gender;
-
-  @HiveField(6)
-  late String email;
-
-  @HiveField(7)
-  late String password;
-
-  @HiveField(8)
-  late DateTime createdAt;
-
-  @HiveField(9)
-  late DateTime updatedAt;
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'full_name': fullName,
+      'address': address,
+      'phone_number': phoneNumber,
+      'birth_date': birthDate.toIso8601String(),
+      'gender': gender,
+      'email': email,
+      'password': password,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
 }

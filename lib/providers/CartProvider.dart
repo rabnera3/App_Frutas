@@ -1,72 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import '../models/Product.dart';
 import '../models/CartItem.dart';
+import '../helpers/DatabaseHelper.dart';
 
 class CartProvider with ChangeNotifier {
-  late Box<CartItem> _cartBox;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  Map<String, CartItem> _items = {};
+  Map<String, Product> _productMap = {}; // Mapa de productos cargados
 
   CartProvider() {
     _initBox();
   }
 
   Future<void> _initBox() async {
-    _cartBox = await Hive.openBox<CartItem>('cartBox');
+    await _dbHelper.database;
+    await _loadCartItems();
+    await _loadProducts(); // Cargar productos
     notifyListeners();
   }
 
-  Map<String, CartItem> get items {
-    Map<String, CartItem> itemsMap = {};
-    for (var item in _cartBox.values) {
-      itemsMap[item.product.id] = item;
+  Future<void> _loadCartItems() async {
+    var results = await _dbHelper.query('cart_items');
+    for (var row in results) {
+      _items[row['product_id']] = CartItem(
+        id: row['id'],
+        userId: row['user_id'],
+        productId: row['product_id'].toString(),
+        quantity: row['quantity'],
+      );
     }
-    return itemsMap;
   }
 
-  int get itemCount => _cartBox.length;
+  Future<void> _loadProducts() async {
+    var results = await _dbHelper.query('products');
+    for (var row in results) {
+      _productMap[row['id'].toString()] = Product(
+        id: row['id'].toString(),
+        name: row['name'],
+        price: row['price'],
+        imageUrl: row['image_url'],
+        shortDescription: row['short_description'],
+        longDescription: row['long_description'],
+        categoryId: row['category_id'],
+      );
+    }
+  }
+
+  Map<String, CartItem> get items => _items;
+
+  int get itemCount => _items.length;
 
   double get totalAmount {
     double total = 0.0;
-    for (var cartItem in _cartBox.values) {
-      total += cartItem.product.price * cartItem.quantity;
-    }
+    _items.forEach((key, cartItem) {
+      // Se debe obtener el producto correspondiente del mapa de productos
+      Product product = getProductById(cartItem.productId);
+      total += cartItem.quantity * product.price;
+    });
     return total;
   }
 
-  void addItem(Product product) {
-    if (_cartBox.containsKey(product.id)) {
-      CartItem existingCartItem = _cartBox.get(product.id)!;
-      existingCartItem.quantity += 1;
-      _cartBox.put(product.id, existingCartItem);
-    } else {
-      _cartBox.put(
+  Future<void> addItem(Product product, int userId) async {
+    if (_items.containsKey(product.id)) {
+      _items.update(
         product.id,
-        CartItem(product: product, quantity: 1),
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          userId: existingCartItem.userId,
+          productId: existingCartItem.productId,
+          quantity: existingCartItem.quantity + 1,
+        ),
+      );
+      await _dbHelper.execute(
+        'UPDATE cart_items SET quantity = quantity + 1 WHERE product_id = ?',
+        [product.id],
+      );
+    } else {
+      await _dbHelper.execute(
+        'INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)',
+        [userId, product.id, 1],
+      );
+
+      // Obtener el ID del último insertado
+      var result = await _dbHelper.rawQuery(
+          'SELECT id FROM cart_items WHERE user_id = ? ORDER BY id DESC LIMIT 1',
+          [userId]);
+      var insertId = result.first['id'];
+
+      _items.putIfAbsent(
+        product.id,
+        () => CartItem(
+          id: insertId,
+          userId: userId,
+          productId: product.id,
+          quantity: 1,
+        ),
       );
     }
     notifyListeners();
   }
 
-  void removeItem(Product product) {
-    if (!_cartBox.containsKey(product.id)) return;
-    CartItem existingCartItem = _cartBox.get(product.id)!;
-    if (existingCartItem.quantity > 1) {
-      existingCartItem.quantity -= 1;
-      _cartBox.put(product.id, existingCartItem);
+  Future<void> removeItem(Product product) async {
+    if (!_items.containsKey(product.id)) return;
+
+    if (_items[product.id]!.quantity > 1) {
+      _items.update(
+        product.id,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          userId: existingCartItem.userId,
+          productId: existingCartItem.productId,
+          quantity: existingCartItem.quantity - 1,
+        ),
+      );
+      await _dbHelper.execute(
+        'UPDATE cart_items SET quantity = quantity - 1 WHERE product_id = ?',
+        [product.id],
+      );
     } else {
-      _cartBox.delete(product.id);
+      _items.remove(product.id);
+      await _dbHelper.execute(
+        'DELETE FROM cart_items WHERE product_id = ?',
+        [product.id],
+      );
     }
     notifyListeners();
   }
 
-  int getItemQuantity(String productId) {
-    return _cartBox.containsKey(productId)
-        ? _cartBox.get(productId)!.quantity
-        : 0;
+  Future<void> clear() async {
+    _items.clear();
+    await _dbHelper.execute('DELETE FROM cart_items');
+    notifyListeners();
   }
 
-  void clear() {
-    _cartBox.clear();
-    notifyListeners();
+  int getItemQuantity(String productId) {
+    return _items.containsKey(productId) ? _items[productId]!.quantity : 0;
+  }
+
+  Product getProductById(String productId) {
+    if (_productMap.containsKey(productId)) {
+      return _productMap[productId]!;
+    } else {
+      throw Exception('Producto no encontrado');
+    }
   }
 }

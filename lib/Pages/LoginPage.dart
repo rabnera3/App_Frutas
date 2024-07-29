@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/UserProvider.dart';
 
 class LoginPage extends StatelessWidget {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -27,6 +34,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(height: 40),
                     TextField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
                         labelText: "Usuario",
@@ -37,6 +45,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
@@ -48,8 +57,33 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/home');
+                      onPressed: () async {
+                        String username = _usernameController.text;
+                        String password = _passwordController.text;
+
+                        bool loginSuccess =
+                            await userProvider.login(username, password);
+                        if (loginSuccess) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        } else {
+                          // Manejar el error de inicio de sesión
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Error'),
+                              content: Text(
+                                  'Nombre de usuario o contraseña incorrectos.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

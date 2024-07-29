@@ -1,28 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import '../helpers/DatabaseHelper.dart';
+import '../models/Category.dart';
 
 class CategoryProvider with ChangeNotifier {
-  late Box<String> _categoryBox;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  String _selectedCategoryId = '';
+  List<Category> _categories = [];
 
   CategoryProvider() {
     _initBox();
   }
 
   Future<void> _initBox() async {
-    _categoryBox = await Hive.openBox<String>('categoryBox');
+    await _dbHelper.database;
+    await _loadCategories();
     notifyListeners();
   }
 
-  String get selectedCategoryId =>
-      _categoryBox.get('selectedCategoryId', defaultValue: '') ?? '';
+  Future<void> _loadCategories() async {
+    final results = await _dbHelper.query('categories');
+    _categories = results.map((result) {
+      return Category(
+        id: result['id'],
+        name: result['name'],
+        imageUrl: result['image_url'],
+      );
+    }).toList();
+    notifyListeners();
+  }
+
+  String get selectedCategoryId => _selectedCategoryId;
+  List<Category> get categories => _categories;
 
   void selectCategory(String categoryId) {
-    _categoryBox.put('selectedCategoryId', categoryId);
+    if (_selectedCategoryId == categoryId) {
+      _selectedCategoryId = ''; // Deseleccionar si ya está seleccionada
+    } else {
+      _selectedCategoryId = categoryId;
+    }
     notifyListeners();
   }
 
   void clearCategory() {
-    _categoryBox.delete('selectedCategoryId');
+    _selectedCategoryId = '';
     notifyListeners();
   }
 }

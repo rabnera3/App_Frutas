@@ -4,6 +4,7 @@ import '../models/Product.dart';
 import '../providers/CartProvider.dart';
 import '../providers/NotificationProvider.dart';
 import '../models/Notification.dart';
+import '../providers/UserProvider.dart';
 
 class ItemBottomNavBar extends StatelessWidget {
   final Product product;
@@ -13,6 +14,9 @@ class ItemBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userId = userProvider.user?.id;
+
     return Container(
       height: 70,
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -44,30 +48,34 @@ class ItemBottomNavBar extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              final cart = Provider.of<CartProvider>(context, listen: false);
-              final notifications =
-                  Provider.of<NotificationProvider>(context, listen: false);
+              if (userId != null) {
+                final cart = Provider.of<CartProvider>(context, listen: false);
+                final notifications =
+                    Provider.of<NotificationProvider>(context, listen: false);
 
-              for (int i = 0; i < quantity; i++) {
-                cart.addItem(product);
+                for (int i = 0; i < quantity; i++) {
+                  cart.addItem(product, userId);
+                }
+
+                notifications.addNotification(
+                  NotificationItem(
+                    title: 'Producto añadido',
+                    message: '${product.name} añadido al carrito.',
+                    dateTime: DateTime.now(),
+                  ),
+                );
+
+                Navigator.pushNamed(context, '/cartPage');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        'Por favor, inicia sesión para añadir al carrito')));
               }
-
-              notifications.addNotification(
-                NotificationItem(
-                  title: 'Producto añadido',
-                  message: '${product.name} añadido al carrito.',
-                  dateTime: DateTime.now(),
-                ),
-              );
-
-              Navigator.pushNamed(context, '/cartPage');
             },
             child: Text('Añadir al carrito'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors
-                  .red, // Debería usar backgroundColor si usas la última versión de Flutter
-              foregroundColor: Colors
-                  .white, // Debería usar foregroundColor si usas la última versión de Flutter
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
           ),
         ],

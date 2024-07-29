@@ -5,11 +5,15 @@ import '../Widgets/AppBarWidget.dart';
 import '../Widgets/DrawerWidget.dart';
 import '../Widgets/CartBottomNavBar.dart';
 import '../providers/CartProvider.dart';
+import '../models/Product.dart';
+import '../providers/UserProvider.dart';
 
 class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final userId = userProvider.user?.id;
 
     return Scaffold(
       body: ListView(
@@ -45,6 +49,7 @@ class CartPage extends StatelessWidget {
                     )
                   else
                     ...cart.items.values.map((item) {
+                      Product product = cart.getProductById(item.productId);
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 9),
                         child: Container(
@@ -67,7 +72,7 @@ class CartPage extends StatelessWidget {
                               Container(
                                 alignment: Alignment.center,
                                 child: Image.asset(
-                                  item.product.imageUrl,
+                                  product.imageUrl,
                                   height: 110,
                                   width: 150,
                                 ),
@@ -82,14 +87,14 @@ class CartPage extends StatelessWidget {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        item.product.name,
+                                        product.name,
                                         style: TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        item.product.longDescription,
+                                        product.longDescription,
                                         style: TextStyle(
                                           fontSize: 16,
                                         ),
@@ -97,7 +102,7 @@ class CartPage extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        'L${item.product.price}',
+                                        'L${product.price}',
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -120,12 +125,12 @@ class CartPage extends StatelessWidget {
                                         color: Colors.red,
                                       ),
                                       onPressed: () {
-                                        cart.removeItem(item.product);
+                                        cart.removeItem(product);
                                       },
                                     ),
                                     Text(
                                       cart
-                                          .getItemQuantity(item.product.id)
+                                          .getItemQuantity(item.productId)
                                           .toString(),
                                       style: TextStyle(
                                           fontSize: 18,
@@ -138,7 +143,14 @@ class CartPage extends StatelessWidget {
                                         color: Colors.red,
                                       ),
                                       onPressed: () {
-                                        cart.addItem(item.product);
+                                        if (userId != null) {
+                                          cart.addItem(product, userId);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      'Por favor, inicia sesión para añadir al carrito')));
+                                        }
                                       },
                                     ),
                                   ],

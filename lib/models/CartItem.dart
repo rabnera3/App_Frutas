@@ -1,18 +1,31 @@
-import 'package:hive/hive.dart';
-import 'Product.dart';
-
-part 'CartItem.g.dart';
-
-@HiveType(typeId: 1)
-class CartItem extends HiveObject {
-  @HiveField(0)
-  final Product product;
-
-  @HiveField(1)
-  int quantity;
+class CartItem {
+  final int id;
+  final int userId;
+  final String productId;
+  final int quantity;
 
   CartItem({
-    required this.product,
+    required this.id,
+    required this.userId,
+    required this.productId,
     required this.quantity,
   });
+
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      id: json['id'],
+      userId: json['userId'],
+      productId: json['productId'],
+      quantity: json['quantity'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'productId': productId,
+      'quantity': quantity,
+    };
+  }
 }

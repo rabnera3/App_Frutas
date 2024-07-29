@@ -114,7 +114,6 @@ class _HomePageState extends State<HomePage> {
           // Category Widget
           CategoriesWidget(
             onCategorySelected: _onCategorySelected,
-            selectedCategoryId: selectedCategoryId,
           ),
 
           if (selectedCategoryId.isEmpty) ...[

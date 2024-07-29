@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart'; // Importar hive_flutter
 import 'Pages/CartPage.dart';
 import 'Pages/HomePage.dart';
 import 'Pages/ItemPage.dart';
@@ -11,26 +9,23 @@ import 'Pages/RegisterPage.dart';
 import 'Pages/SettingsPage.dart';
 import 'Pages/AccountPage.dart';
 import 'Pages/OrdersPage.dart';
+import 'providers/CategoryProvider.dart';
 import 'providers/CartProvider.dart';
 import 'providers/FavoriteProvider.dart';
 import 'providers/NotificationProvider.dart';
 import 'providers/SearchProvider.dart';
+import 'providers/UserProvider.dart'; // Importar UserProvider
+import 'helpers/DatabaseHelper.dart'; // Importar DatabaseHelper
+import 'providers/ProductProvider.dart';
 import 'models/Product.dart';
-import 'models/Notification.dart'; // Importar Notification
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Especificar la dirección para Hive
-  await Hive.initFlutter('hive_boxes');
-
-  // Registrar adaptadores
-  Hive.registerAdapter(ProductAdapter());
-  Hive.registerAdapter(NotificationItemAdapter());
-
-  // Abrir cajas Hive
-  await Hive.openBox<Product>('productBox');
-  await Hive.openBox<NotificationItem>('notificationBox');
+  // Inicializar la base de datos SQLite
+  final dbHelper = DatabaseHelper();
+  await dbHelper
+      .database; // Asegurarse de que la base de datos esté inicializada
 
   runApp(MyApp());
 }
@@ -44,6 +39,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FavoriteProvider()),
         ChangeNotifierProvider(create: (context) => NotificationProvider()),
         ChangeNotifierProvider(create: (context) => SearchProvider()),
+        ChangeNotifierProvider(
+            create: (context) => UserProvider()), // Añadir UserProvider
+        ChangeNotifierProvider(create: (context) => CategoryProvider()),
+        ChangeNotifierProvider(create: (context) => ProductProvider()),
       ],
       child: MaterialApp(
         title: "Fruit app",

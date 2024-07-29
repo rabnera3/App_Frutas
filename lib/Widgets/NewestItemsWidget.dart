@@ -4,11 +4,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../Pages/ItemPage.dart';
 import '../models/Product.dart';
 import 'package:provider/provider.dart';
-import '../providers/FavoriteProvider.dart';
 import '../providers/CartProvider.dart';
 import '../providers/NotificationProvider.dart';
+import '../providers/ProductProvider.dart';
+import '../providers/UserProvider.dart';
 import '../models/Notification.dart';
-import 'package:hive/hive.dart';
 
 class NewestItemsWidget extends StatelessWidget {
   final String searchQuery;
@@ -18,8 +18,12 @@ class NewestItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productBox = Hive.box<Product>('productBox');
-    List<Product> filteredProducts = productBox.values
+    final productProvider = Provider.of<ProductProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final userId = userProvider.user?.id;
+    List<Product> products = productProvider.products;
+
+    List<Product> filteredProducts = products
         .where((product) =>
             product.name.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -87,7 +91,7 @@ class NewestItemsWidget extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                product.longDescription,
+                                product.shortDescription,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -126,29 +130,6 @@ class NewestItemsWidget extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Consumer<FavoriteProvider>(
-                                builder: (context, favoriteProvider, _) {
-                                  final isFavorite = favoriteProvider.favorites
-                                      .contains(product);
-                                  return IconButton(
-                                    icon: Icon(
-                                      isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      color: Colors.red,
-                                      size: 26,
-                                    ),
-                                    onPressed: () {
-                                      if (isFavorite) {
-                                        favoriteProvider
-                                            .removeFavorite(product);
-                                      } else {
-                                        favoriteProvider.addFavorite(product);
-                                      }
-                                    },
-                                  );
-                                },
-                              ),
                               IconButton(
                                 icon: Icon(
                                   CupertinoIcons.cart,
@@ -156,22 +137,32 @@ class NewestItemsWidget extends StatelessWidget {
                                   size: 26,
                                 ),
                                 onPressed: () {
-                                  final cart = Provider.of<CartProvider>(
-                                      context,
-                                      listen: false);
-                                  cart.addItem(product);
+                                  if (userId != null) {
+                                    final cart = Provider.of<CartProvider>(
+                                        context,
+                                        listen: false);
+                                    cart.addItem(product, userId);
 
-                                  // Agregar notificación
-                                  final notificationProvider =
-                                      Provider.of<NotificationProvider>(context,
-                                          listen: false);
-                                  notificationProvider
-                                      .addNotification(NotificationItem(
-                                    title: 'Producto Añadido',
-                                    message:
-                                        'Añadido al carrito: ${product.name}',
-                                    dateTime: DateTime.now(),
-                                  ));
+                                    // Agregar notificación
+                                    final notificationProvider =
+                                        Provider.of<NotificationProvider>(
+                                            context,
+                                            listen: false);
+                                    notificationProvider.addNotification(
+                                      NotificationItem(
+                                        title: 'Producto Añadido',
+                                        message:
+                                            'Añadido al carrito: ${product.name}',
+                                        dateTime: DateTime.now(),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Por favor, inicia sesión para añadir al carrito')),
+                                    );
+                                  }
                                 },
                               ),
                             ],

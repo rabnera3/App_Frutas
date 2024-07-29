@@ -2,11 +2,8 @@ import 'package:clippy_flutter/arc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 import '../Widgets/AppBarWidget.dart';
 import '../Widgets/ItemBottomNavBar.dart';
-import '../providers/CartProvider.dart';
-import '../providers/NotificationProvider.dart'; // Importa NotificationProvider
 import '../models/Product.dart';
 
 class ItemPage extends StatefulWidget {
@@ -23,10 +20,6 @@ class _ItemPageState extends State<ItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<CartProvider>(context);
-    final notificationProvider =
-        Provider.of<NotificationProvider>(context, listen: false);
-
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 5),
