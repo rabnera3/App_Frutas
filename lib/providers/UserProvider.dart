@@ -25,29 +25,59 @@ class UserProvider with ChangeNotifier {
 
   User? get user => _user;
 
-  Future<void> updateUser(User user) async {
-    await _dbHelper.execute(
-      'UPDATE users SET full_name = ?, address = ?, phone_number = ?, birth_date = ?, gender = ?, email = ?, password = ?, updated_at = ? WHERE username = ?',
-      [
-        user.fullName,
-        user.address,
-        user.phoneNumber,
-        user.birthDate.toIso8601String(),
-        user.gender,
-        user.email,
-        user.password,
-        DateTime.now().toIso8601String(), // Actualización manual de updated_at
-        user.username,
-      ],
-    );
-    _user = user;
+  Future<void> updateUser(Map<String, dynamic> fields) async {
+    if (_user == null) return;
+
+    // Construir la consulta SQL dinámicamente
+    String sql = 'UPDATE users SET ';
+    List<dynamic> values = [];
+
+    fields.forEach((key, value) {
+      sql += '$key = ?, ';
+      values.add(value);
+    });
+
+    // Eliminar la última coma y espacio
+    sql = sql.substring(0, sql.length - 2);
+    sql += ' WHERE username = ?';
+    values.add(_user!.username);
+
+    await _dbHelper.execute(sql, values);
+
+    // Actualizar el objeto _user con los nuevos valores
+    fields.forEach((key, value) {
+      switch (key) {
+        case 'full_name':
+          _user = _user!.copyWith(fullName: value);
+          break;
+        case 'address':
+          _user = _user!.copyWith(address: value);
+          break;
+        case 'phone_number':
+          _user = _user!.copyWith(phoneNumber: value);
+          break;
+        case 'gender':
+          _user = _user!.copyWith(gender: value);
+          break;
+        case 'email':
+          _user = _user!.copyWith(email: value);
+          break;
+        case 'password':
+          _user = _user!.copyWith(password: value);
+          break;
+        // Agregar más campos según sea necesario
+      }
+    });
+
     notifyListeners();
   }
 
   Future<void> deleteUser() async {
     if (_user != null) {
-      await _dbHelper
-          .execute('DELETE FROM users WHERE username = ?', [_user!.username]);
+      await _dbHelper.execute(
+        'DELETE FROM users WHERE username = ?',
+        [_user!.username],
+      );
       _user = null;
       notifyListeners();
     }
@@ -94,5 +124,20 @@ class UserProvider with ChangeNotifier {
     return true; // Registro exitoso
   }
 
+  Future<void> logout() async {
+    _user = null;
+    notifyListeners();
+  }
+
   bool get isUserLoggedIn => _user != null;
+
+  Future<bool> verifyPassword(String password) async {
+    if (_user == null) return false;
+
+    final results = await _dbHelper.rawQuery(
+      'SELECT * FROM users WHERE username = ? AND password = ?',
+      [_user!.username, password],
+    );
+    return results.isNotEmpty;
+  }
 }

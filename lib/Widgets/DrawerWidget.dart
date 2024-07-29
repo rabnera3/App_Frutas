@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/UserProvider.dart';
 
 class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return Drawer(
       child: ListView(
         children: [
@@ -14,14 +18,14 @@ class DrawerWidget extends StatelessWidget {
                 color: Colors.red,
               ),
               accountName: Text(
-                "Usuario",
+                userProvider.user?.fullName ?? "Usuario",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               accountEmail: Text(
-                "Usuario@etc.com",
+                userProvider.user?.email ?? "Usuario@etc.com",
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -33,8 +37,6 @@ class DrawerWidget extends StatelessWidget {
               margin: EdgeInsets.zero,
             ),
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               CupertinoIcons.home,
@@ -48,11 +50,13 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (Route<dynamic> route) => false,
+              );
             },
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               CupertinoIcons.person,
@@ -66,11 +70,9 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/account');
+              Navigator.pushReplacementNamed(context, '/account');
             },
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               CupertinoIcons.cart_fill,
@@ -84,11 +86,9 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/orders');
+              Navigator.pushReplacementNamed(context, '/orders');
             },
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               CupertinoIcons.heart_fill,
@@ -102,11 +102,9 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/favoritesPage');
+              Navigator.pushReplacementNamed(context, '/favoritesPage');
             },
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               CupertinoIcons.settings,
@@ -120,11 +118,9 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/settings');
+              Navigator.pushReplacementNamed(context, '/settings');
             },
           ),
-
-          // List Tile
           ListTile(
             leading: Icon(
               Icons.exit_to_app,
@@ -138,7 +134,12 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/login');
+              userProvider.logout();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (Route<dynamic> route) => false,
+              );
             },
           ),
         ],

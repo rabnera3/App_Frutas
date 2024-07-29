@@ -74,6 +74,16 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
+      CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        total REAL NOT NULL,
+        status TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,

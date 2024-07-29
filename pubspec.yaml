@@ -15,7 +15,8 @@ dependencies:
   intl_phone_field: ^3.1.0
   sqflite: ^2.0.0+4
   path_provider: ^2.0.7
-
+  flutter_ringtone_player: ^3.1.0
+  vibration: ^1.7.4
   cupertino_icons: ^1.0.2
   flutter_rating_bar: ^4.0.1
   clippy_flutter:

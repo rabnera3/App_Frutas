@@ -8,6 +8,7 @@ import '../providers/CartProvider.dart';
 import '../providers/NotificationProvider.dart';
 import '../providers/ProductProvider.dart';
 import '../providers/UserProvider.dart';
+import '../providers/FavoriteProvider.dart';
 import '../models/Notification.dart';
 
 class NewestItemsWidget extends StatelessWidget {
@@ -20,7 +21,9 @@ class NewestItemsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final userId = userProvider.user?.id;
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final user = userProvider.user;
+
     List<Product> products = productProvider.products;
 
     List<Product> filteredProducts = products
@@ -39,6 +42,9 @@ class NewestItemsWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
           children: filteredProducts.map((product) {
+            final isFavorite = favoriteProvider.favoriteProducts
+                .any((p) => p.id == product.id);
+
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: GestureDetector(
@@ -132,16 +138,40 @@ class NewestItemsWidget extends StatelessWidget {
                             children: [
                               IconButton(
                                 icon: Icon(
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: Colors.red,
+                                  size: 26,
+                                ),
+                                onPressed: () {
+                                  if (user != null) {
+                                    if (isFavorite) {
+                                      favoriteProvider.removeFavorite(product);
+                                    } else {
+                                      favoriteProvider.addFavorite(product);
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Por favor, inicia sesión para gestionar favoritos')),
+                                    );
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
                                   CupertinoIcons.cart,
                                   color: Colors.red,
                                   size: 26,
                                 ),
                                 onPressed: () {
-                                  if (userId != null) {
+                                  if (user != null) {
                                     final cart = Provider.of<CartProvider>(
                                         context,
                                         listen: false);
-                                    cart.addItem(product, userId);
+                                    cart.addItem(product, user.id!);
 
                                     // Agregar notificación
                                     final notificationProvider =
@@ -150,6 +180,7 @@ class NewestItemsWidget extends StatelessWidget {
                                             listen: false);
                                     notificationProvider.addNotification(
                                       NotificationItem(
+                                        userId: user.id!,
                                         title: 'Producto Añadido',
                                         message:
                                             'Añadido al carrito: ${product.name}',

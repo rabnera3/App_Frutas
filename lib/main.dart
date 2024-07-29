@@ -14,8 +14,8 @@ import 'providers/CartProvider.dart';
 import 'providers/FavoriteProvider.dart';
 import 'providers/NotificationProvider.dart';
 import 'providers/SearchProvider.dart';
-import 'providers/UserProvider.dart'; // Importar UserProvider
-import 'helpers/DatabaseHelper.dart'; // Importar DatabaseHelper
+import 'providers/UserProvider.dart';
+import 'helpers/DatabaseHelper.dart';
 import 'providers/ProductProvider.dart';
 import 'models/Product.dart';
 
@@ -36,11 +36,19 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => FavoriteProvider()),
-        ChangeNotifierProvider(create: (context) => NotificationProvider()),
-        ChangeNotifierProvider(create: (context) => SearchProvider()),
         ChangeNotifierProvider(
             create: (context) => UserProvider()), // Añadir UserProvider
+        ChangeNotifierProxyProvider<UserProvider, FavoriteProvider>(
+          create: (context) => FavoriteProvider(),
+          update: (context, userProvider, favoriteProvider) =>
+              favoriteProvider!..setUser(userProvider.user),
+        ),
+        ChangeNotifierProxyProvider<UserProvider, NotificationProvider>(
+          create: (context) => NotificationProvider(),
+          update: (context, userProvider, notificationProvider) =>
+              notificationProvider!..setUser(userProvider.user),
+        ),
+        ChangeNotifierProvider(create: (context) => SearchProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => ProductProvider()),
       ],

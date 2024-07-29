@@ -56,4 +56,32 @@ class User {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  User copyWith({
+    int? id,
+    String? username,
+    String? fullName,
+    String? address,
+    String? phoneNumber,
+    DateTime? birthDate,
+    String? gender,
+    String? email,
+    String? password,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return User(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      fullName: fullName ?? this.fullName,
+      address: address ?? this.address,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

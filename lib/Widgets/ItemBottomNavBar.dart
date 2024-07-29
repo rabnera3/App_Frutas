@@ -59,17 +59,14 @@ class ItemBottomNavBar extends StatelessWidget {
 
                 notifications.addNotification(
                   NotificationItem(
+                    userId: userId,
                     title: 'Producto añadido',
                     message: '${product.name} añadido al carrito.',
                     dateTime: DateTime.now(),
                   ),
                 );
-
-                Navigator.pushNamed(context, '/cartPage');
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        'Por favor, inicia sesión para añadir al carrito')));
+                // Manejar el caso donde el usuario no ha iniciado sesión
               }
             },
             child: Text('Añadir al carrito'),
